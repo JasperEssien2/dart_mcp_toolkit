@@ -71,11 +71,7 @@ class ModelToolMapper {
       return ObjectSchema(name: name, description: description, isRequired: isRequired, properties: properties);
     }
 
-    return InvalidSchema(
-      name: name,
-      description: description,
-      error: 'Cannot handle type ${reflected.reflectedType}',
-    );
+    return InvalidSchema(name: name, description: description, error: 'Cannot handle type ${reflected.reflectedType}');
   }
 
   bool _isEnumValue(Symbol e, ClassMirror reflected) => switch (e) {
@@ -107,11 +103,7 @@ class ModelToolMapper {
             #int => IntSchema(name: fieldName, description: description, isRequired: isRequired),
             #num => NumberSchema(name: fieldName, description: description, isRequired: isRequired),
             #String => StringSchema(name: fieldName, description: description, isRequired: isRequired),
-            #bool => BooleanSchema(
-              name: fieldName,
-              description: description,
-              isRequired: isRequired,
-            ),
+            #bool => BooleanSchema(name: fieldName, description: description, isRequired: isRequired),
             #List => _handleList(
               declaration.value as VariableMirror,
               name: fieldName,
