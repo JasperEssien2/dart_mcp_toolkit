@@ -4,12 +4,13 @@ version: 0.1.0
 # repository: https://github.com/my_org/my_repo
 
 environment:
- sdk: ">=3.9.2 <4.0.0"
+  sdk: ">=3.9.2 <4.0.0"
 
 # Add regular dependencies here.
 dependencies:
   collection: ^1.19.1
   equatable: ^2.0.7
+  meta: ^1.17.0
 
 dev_dependencies:
   lints: ^6.0.0
