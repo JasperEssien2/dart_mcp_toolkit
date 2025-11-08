@@ -55,12 +55,12 @@ class ModelToolMapper {
   }) {
     final reflected = reflectClass(value.type.reflectedType);
 
-    final options = reflected.declarations.keys
-        .where((e) => _isEnumValue(e, reflected))
-        .map(MirrorSystem.getName)
-        .toList();
-
     if (reflected.isEnum) {
+      final options = reflected.declarations.keys
+          .where((e) => _isEnumValue(e, reflected))
+          .map(MirrorSystem.getName)
+          .toList();
+          
       // TODO(jasperessien): What happens when enum has variables? and methods {basically enhanced enum features}
       return EnumSchema(name: name, description: description, isRequired: isRequired, options: options);
     }
