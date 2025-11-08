@@ -1,9 +1,9 @@
 import 'dart:mirrors';
 
 import 'package:collection/collection.dart';
-import 'package:equatable/equatable.dart';
 import 'package:mcp_toolkit/src/annotations/annotations.dart';
-import 'package:mcp_toolkit/src/models/callable_propery_schema.dart';
+import 'package:mcp_toolkit/src/models/callable_property_schema.dart';
+import 'package:mcp_toolkit/src/models/callable_tool.dart';
 
 class ModelToolMapper {
   ModelToolMapper({required this.toolInput});
@@ -17,15 +17,9 @@ class ModelToolMapper {
       toolName: final name,
       toolDescription: final description,
     )) {
-      final properties = _getCallablePropertiesFromClass(
-        reflected,
-      );
+      final properties = _getCallablePropertiesFromClass(reflected);
 
-      return CallableTool(
-        toolName: name,
-        toolDescription: description,
-        properties: properties,
-      );
+      return CallableTool(toolName: name, toolDescription: description, properties: properties);
     }
 
     return null;
@@ -65,30 +59,16 @@ class ModelToolMapper {
 
     if (reflected.isEnum) {
       // TODO(jasperessien): What happens when enum has variables?
-      return EnumSchema(
-        name: name,
-        description: description,
-        isRequired: isRequired,
-        options: options,
-      );
+      return EnumSchema(name: name, description: description, isRequired: isRequired, options: options);
     }
 
     if (reflected.simpleName case #Record) {
       // TODO(jasperessien): No way to extract record variables/declaration using dart::mirror
-      return InvalidSchema(
-        name: name,
-        description: description,
-        error: 'Does not support Record type',
-      );
+      return InvalidSchema(name: name, description: description, error: 'Does not support Record type');
     }
 
     if (_getCallablePropertiesFromClass(reflected) case final properties when properties.isNotEmpty) {
-      return ObjectSchema(
-        name: name,
-        description: description,
-        isRequired: isRequired,
-        properties: properties,
-      );
+      return ObjectSchema(name: name, description: description, isRequired: isRequired, properties: properties);
     }
 
     return InvalidSchema(
@@ -108,13 +88,10 @@ class ModelToolMapper {
   };
 
   // ignore: avoid_dynamic
-  dynamic _findCallableToolPropertyFromDeclaration(
-    MapEntry<Symbol, DeclarationMirror> declaration,
-  ) => declaration.value.metadata.firstWhereOrNull((e) => e.reflectee is MCPToolProperty)?.reflectee;
+  dynamic _findCallableToolPropertyFromDeclaration(MapEntry<Symbol, DeclarationMirror> declaration) =>
+      declaration.value.metadata.firstWhereOrNull((e) => e.reflectee is MCPToolProperty)?.reflectee;
 
-  List<CallablePropertySchema> _getCallablePropertiesFromClass(
-    ClassMirror reflected,
-  ) {
+  List<CallablePropertySchema> _getCallablePropertiesFromClass(ClassMirror reflected) {
     final properties = <CallablePropertySchema>[];
 
     for (final declaration in reflected.declarations.entries) {
@@ -157,15 +134,3 @@ class ModelToolMapper {
     return properties;
   }
 }
-
-class CallableTool extends Equatable {
-  const CallableTool({required this.toolName, required this.toolDescription, required this.properties});
-
-  final String toolName;
-  final String toolDescription;
-  final List<CallablePropertySchema> properties;
-
-  @override
-  List<Object> get props => [toolName, toolDescription, properties];
-}
-
