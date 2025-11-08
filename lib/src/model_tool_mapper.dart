@@ -39,28 +39,24 @@ class ModelToolMapper {
       #num => const NumberSchema.type(),
       #String => const StringSchema.type(),
       #bool => const BooleanSchema.type(),
-      // TODO(jasperessien): Handle object type and enumerated type
-      final symbol => InvalidSchema(
-        name: '',
-        error: 'Cannot handle list type: ${MirrorSystem.getName(symbol ?? Symbol.empty)}',
-      ),
+      _ => _handleOtherType(type: value.type.reflectedType, name: '', description: null, isRequired: null),
     },
   );
 
-  CallablePropertySchema _handleOtherType(
-    VariableMirror value, {
+  CallablePropertySchema _handleOtherType({
+    required Type type,
     required String name,
     required String? description,
     required bool? isRequired,
   }) {
-    final reflected = reflectClass(value.type.reflectedType);
+    final reflected = reflectClass(type);
 
     if (reflected.isEnum) {
       final options = reflected.declarations.keys
           .where((e) => _isEnumValue(e, reflected))
           .map(MirrorSystem.getName)
           .toList();
-          
+
       // TODO(jasperessien): What happens when enum has variables? and methods {basically enhanced enum features}
       return EnumSchema(name: name, description: description, isRequired: isRequired, options: options);
     }
@@ -114,7 +110,7 @@ class ModelToolMapper {
               isRequired: isRequired,
             ),
             _ => _handleOtherType(
-              declaration.value as VariableMirror,
+              type: (declaration.value as VariableMirror).type.reflectedType,
               name: fieldName,
               description: description,
               isRequired: isRequired,
