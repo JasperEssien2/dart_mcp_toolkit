@@ -1,9 +1,9 @@
 import 'package:equatable/equatable.dart';
 
 class MCPToolInput extends Equatable {
-  const MCPToolInput({this.toolName, this.toolDescription});
+  const MCPToolInput({required this.toolName, this.toolDescription});
 
-  final String? toolName;
+  final String toolName;
   final String? toolDescription;
 
   @override
