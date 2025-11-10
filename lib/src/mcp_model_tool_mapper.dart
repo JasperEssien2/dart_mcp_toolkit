@@ -5,8 +5,8 @@ import 'package:mcp_toolkit/src/annotations/annotations.dart';
 import 'package:mcp_toolkit/src/models/callable_property_schema.dart';
 import 'package:mcp_toolkit/src/models/callable_tool.dart';
 
-class ModelToolMapper {
-  ModelToolMapper({required this.toolInput});
+class MCPModelToolMapper {
+  MCPModelToolMapper({required this.toolInput});
 
   final List<Type> toolInput;
 
