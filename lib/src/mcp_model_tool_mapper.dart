@@ -37,12 +37,14 @@ class MCPModelToolMapper {
     name: name,
     description: description,
     isRequired: isRequired,
-    type: switch (value.type.typeArguments.firstOrNull?.simpleName) {
-      #int => const IntSchema.type(),
-      #num => const NumberSchema.type(),
-      #String => const StringSchema.type(),
-      #bool => const BooleanSchema.type(),
-      _ => _handleOtherType(type: value.type.reflectedType, name: '', description: null, isRequired: null),
+    type: switch ((value.type.typeArguments.firstOrNull?.simpleName, value.type.typeArguments.firstOrNull)) {
+      (#int, _) => const IntSchema.type(),
+      (#num, _) => const NumberSchema.type(),
+      (#String, _) => const StringSchema.type(),
+      (#bool, _) => const BooleanSchema.type(),
+      // TODO(jasperessien): Think of a better way to handle this, instead of passing an empty string
+      (_, final type?) => _handleOtherType(type: type.reflectedType, name: '', description: null, isRequired: null),
+      (final symbol, _) => InvalidSchema(name: name, description: description, error: 'Cannot handle: $symbol'),
     },
   );
 

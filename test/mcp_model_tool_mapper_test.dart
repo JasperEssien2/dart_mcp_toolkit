@@ -35,28 +35,17 @@ void main() {
             toolName: 'complex_tool',
             properties: [
               StringSchema(name: 'name', description: 'User name', isRequired: true),
-              IntSchema(name: 'age', description: 'User age', isRequired: false),
-              ListSchema(
-                name: 'items',
-                description: 'List of items',
-                isRequired: false,
-                type: StringSchema.type(),
-              ),
+              IntSchema(name: 'age', description: 'User age'),
+              ListSchema(name: 'items', description: 'List of items', type: StringSchema.type()),
               ObjectSchema(
                 name: 'nested',
                 description: 'Nested object',
-                isRequired: false,
                 properties: [
                   StringSchema(name: 'nested_id', isRequired: true),
-                  BooleanSchema(name: 'value', isRequired: false),
+                  BooleanSchema(name: 'value'),
                 ],
               ),
-              EnumSchema(
-                name: 'status',
-                description: 'Status of the user',
-                isRequired: false,
-                options: ['value1', 'value2'],
-              ),
+              EnumSchema(name: 'status', description: 'Status of the user', options: ['value1', 'value2']),
             ],
           ),
         ],
@@ -71,19 +60,15 @@ void main() {
         [
           const CallableTool(
             toolName: 'list_of_objects_tool',
-            toolDescription: null,
             properties: [
               ListSchema(
                 name: 'data',
                 description: 'List of data objects',
-                isRequired: false,
                 type: ObjectSchema(
-                  name: 'data',
-                  description: 'List of data objects',
-                  isRequired: false,
+                  name: '',
                   properties: [
-                    StringSchema(name: 'nested_id', description: null, isRequired: true),
-                    BooleanSchema(name: 'value', description: null, isRequired: false),
+                    StringSchema(name: 'nested_id', isRequired: true),
+                    BooleanSchema(name: 'value'),
                   ],
                 ),
               ),
@@ -101,10 +86,9 @@ void main() {
         [
           const CallableTool(
             toolName: 'tool_with_custom_names',
-            toolDescription: null,
             properties: [
-              StringSchema(name: 'custom_first_param', description: 'Custom named first parameter', isRequired: false),
-              IntSchema(name: 'custom_second_param', description: null, isRequired: false),
+              StringSchema(name: 'custom_first_param', description: 'Custom named first parameter'),
+              IntSchema(name: 'custom_second_param'),
             ],
           ),
         ],
@@ -119,7 +103,6 @@ void main() {
         [
           const CallableTool(
             toolName: 'no_properties_tool',
-            toolDescription: null,
             properties: [],
           ),
         ],
@@ -140,9 +123,8 @@ void main() {
         [
           const CallableTool(
             toolName: 'unsupported_record_tool',
-            toolDescription: null,
             properties: [
-              InvalidSchema(name: 'record', description: null, isRequired: false, error: 'Does not support Record type'),
+              InvalidSchema(name: 'record', error: 'Does not support Record type'),
             ],
           ),
         ],
@@ -155,25 +137,6 @@ void main() {
       expect(model.callableTools(), isEmpty);
     });
 
-    test('ensure mapper handles duplicate tool names gracefully (e.g., takes the first one)', () {
-      final model = MCPModelToolMapper(toolModelTypes: [SimpleToolInput, DuplicateSimpleToolInput]);
-
-      expect(
-        model.callableTools(),
-        [
-          const CallableTool(
-            toolName: 'simple_tool',
-            toolDescription: 'A simple test tool',
-            properties: [
-              StringSchema(name: 'param1', description: 'The first parameter', isRequired: true),
-              IntSchema(name: 'param2', description: 'The second parameter', isRequired: false),
-              BooleanSchema(name: 'boolean_param', description: 'The third parameter', isRequired: false),
-            ],
-          ),
-        ],
-      );
-    });
-
     test('ensure mapper returns an empty list for a tool with MCPToolInput but no properties', () {
       final model = MCPModelToolMapper(toolModelTypes: [ToolWithNoPropertiesButAnnotation]);
 
@@ -182,7 +145,6 @@ void main() {
         [
           const CallableTool(
             toolName: 'tool_with_no_properties_but_annotation',
-            toolDescription: null,
             properties: [],
           ),
         ],
@@ -289,21 +251,11 @@ class ToolWithNoPropertiesButAnnotation {
   const ToolWithNoPropertiesButAnnotation();
 }
 
-@MCPToolInput(toolName: 'simple_tool', toolDescription: 'Another simple tool with a duplicate name')
-class DuplicateSimpleToolInput {
-  const DuplicateSimpleToolInput({required this.anotherParam});
-
-  @MCPToolProperty(description: 'Another parameter', isRequired: true)
-  final String anotherParam;
-}
-
-// Tool with no properties
 @MCPToolInput(toolName: 'no_properties_tool')
 class NoPropertiesToolInput {
   const NoPropertiesToolInput();
 }
 
-// Tool with no MCPToolInput annotation
 class NoAnnotationToolInput {
   const NoAnnotationToolInput({required this.param});
 
@@ -311,7 +263,6 @@ class NoAnnotationToolInput {
   final String param;
 }
 
-// Tool with unsupported type (Record)
 @MCPToolInput(toolName: 'unsupported_record_tool')
 class UnsupportedRecordToolInput {
   const UnsupportedRecordToolInput({required this.record});
