@@ -8,7 +8,7 @@ void main() {
   group('MCPModelToolMapper', () {
     group('Test callableTools', () {
       test('ensure mapper returns correct structure for SimpleToolModel', () {
-        final model = MCPModelToolMapper(toolInput: [SimpleToolInput]);
+        final model = MCPModelToolMapper(toolInput: [SimpleToolInput])..initialize();
 
         expect(
           model.callableTools,
@@ -27,7 +27,7 @@ void main() {
       });
 
       test('ensure mapper returns correct structure for ComplexToolInput', () {
-        final model = MCPModelToolMapper(toolInput: [ComplexToolInput]);
+        final model = MCPModelToolMapper(toolInput: [ComplexToolInput])..initialize();
 
         expect(
           model.callableTools,
@@ -54,7 +54,7 @@ void main() {
       });
 
       test('ensure mapper returns correct structure for ListOfObjectsToolInput', () {
-        final model = MCPModelToolMapper(toolInput: [ListOfObjectsToolInput]);
+        final model = MCPModelToolMapper(toolInput: [ListOfObjectsToolInput])..initialize();
 
         expect(
           model.callableTools,
@@ -80,7 +80,7 @@ void main() {
       });
 
       test('ensure mapper returns correct structure for CustomNamesToolInput', () {
-        final model = MCPModelToolMapper(toolInput: [CustomNamesToolInput]);
+        final model = MCPModelToolMapper(toolInput: [CustomNamesToolInput])..initialize();
 
         expect(
           model.callableTools,
@@ -97,7 +97,7 @@ void main() {
       });
 
       test('ensure mapper returns correct structure for NoPropertiesToolInput', () {
-        final model = MCPModelToolMapper(toolInput: [NoPropertiesToolInput]);
+        final model = MCPModelToolMapper(toolInput: [NoPropertiesToolInput])..initialize();
 
         expect(
           model.callableTools,
@@ -111,13 +111,13 @@ void main() {
       });
 
       test('ensure mapper ignores classes without MCPToolInput annotation', () {
-        final model = MCPModelToolMapper(toolInput: [NoAnnotationToolInput]);
+        final model = MCPModelToolMapper(toolInput: [NoAnnotationToolInput])..initialize();
 
         expect(model.callableTools, isEmpty);
       });
 
       test('ensure mapper returns InvalidSchema for UnsupportedRecordToolInput', () {
-        final model = MCPModelToolMapper(toolInput: [UnsupportedRecordToolInput]);
+        final model = MCPModelToolMapper(toolInput: [UnsupportedRecordToolInput])..initialize();
 
         expect(
           model.callableTools,
@@ -133,13 +133,13 @@ void main() {
       });
 
       test('ensure mapper returns an empty list for empty toolModelTypes', () {
-        final model = MCPModelToolMapper(toolInput: []);
+        final model = MCPModelToolMapper(toolInput: [])..initialize();
 
         expect(model.callableTools, isEmpty);
       });
 
       test('ensure mapper returns an empty list for a tool with MCPToolInput but no properties', () {
-        final model = MCPModelToolMapper(toolInput: [ToolWithNoPropertiesButAnnotation]);
+        final model = MCPModelToolMapper(toolInput: [ToolWithNoPropertiesButAnnotation])..initialize();
 
         expect(
           model.callableTools,
@@ -153,13 +153,13 @@ void main() {
       });
 
       test('ensure mapper ignores classes with MCPToolProperty annotations but no MCPToolInput annotation', () {
-        final model = MCPModelToolMapper(toolInput: [ToolWithPropertiesButNoInputAnnotation]);
+        final model = MCPModelToolMapper(toolInput: [ToolWithPropertiesButNoInputAnnotation])..initialize();
 
         expect(model.callableTools, isEmpty);
       });
 
       test('ensure mapper ignores classes with MCPToolProperty annotations but no MCPToolInput annotation', () {
-        final model = MCPModelToolMapper(toolInput: [ToolWithPropertiesButNoInputAnnotation]);
+        final model = MCPModelToolMapper(toolInput: [ToolWithPropertiesButNoInputAnnotation])..initialize();
 
         expect(model.callableTools, isEmpty);
       });
@@ -167,7 +167,7 @@ void main() {
   });
 
   test('ensure mapper returns correct structure for EnumWithMethodsToolInput', () {
-    final model = MCPModelToolMapper(toolInput: [EnumWithMethodsToolInput]);
+    final model = MCPModelToolMapper(toolInput: [EnumWithMethodsToolInput])..initialize();
 
     expect(
       model.callableTools,
