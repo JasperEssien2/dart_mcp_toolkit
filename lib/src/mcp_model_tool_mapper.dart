@@ -57,9 +57,9 @@ class MCPModelToolMapper {
     final reflected = reflectClass(type);
 
     if (reflected.isEnum) {
-      final options = reflected.declarations.keys
-          .where((e) => _isEnumValue(e, reflected))
-          .map(MirrorSystem.getName)
+      final options = reflected.declarations.entries
+          .where((e) => _isEnumValue(e.key, e.value, reflected))
+          .map((e) => MirrorSystem.getName(e.key))
           .toList();
 
       // TODO(jasperessien): What happens when enum has variables? and methods {basically enhanced enum features}
@@ -78,13 +78,12 @@ class MCPModelToolMapper {
     return InvalidSchema(name: name, description: description, error: 'Cannot handle type ${reflected.reflectedType}');
   }
 
-  bool _isEnumValue(Symbol e, ClassMirror reflected) => switch (e) {
-    #values => false,
-    // TODO(jasperessien): Investigate why this doesn't work as a work around, the below is used
-    #_enumToString => false,
-    _ when MirrorSystem.getName(e) == '_enumToString' => false,
-    _ when e == reflected.simpleName => false,
-    _ => true,
+  bool _isEnumValue(Symbol e, DeclarationMirror declaration, ClassMirror reflected) => switch ((e, declaration)) {
+    (#values, _) => false,
+    (_, MethodMirror()) => false,
+    (_, VariableMirror()) => true,
+    (_, _) when e == reflected.simpleName => false,
+    (_, _) => false,
   };
 
   // ignore: avoid_dynamic

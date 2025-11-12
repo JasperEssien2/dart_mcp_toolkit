@@ -163,6 +163,72 @@ void main() {
       expect(model.callableTools(), isEmpty);
     });
   });
+
+  test('ensure mapper returns correct structure for EnumWithVariablesToolInput', () {
+    final model = MCPModelToolMapper(toolModelTypes: [EnumWithVariablesToolInput]);
+
+    expect(
+      model.callableTools(),
+      [
+        const CallableTool(
+          toolName: 'enum_with_variables_tool',
+          properties: [
+            EnumSchema(name: 'status', description: 'Status with variables', options: ['active', 'inactive']),
+          ],
+        ),
+      ],
+    );
+  });
+
+  test('ensure mapper returns correct structure for EnumWithMethodsToolInput', () {
+    final model = MCPModelToolMapper(toolModelTypes: [EnumWithMethodsToolInput]);
+
+    expect(
+      model.callableTools(),
+      [
+        const CallableTool(
+          toolName: 'enum_with_methods_tool',
+          properties: [
+            EnumSchema(name: 'action', description: 'Action with methods', options: ['start', 'stop']),
+          ],
+        ),
+      ],
+    );
+  });
+
+  test('ensure mapper returns correct structure for GenericObjectToolInput', () {
+    final model = MCPModelToolMapper(toolModelTypes: [GenericObjectToolInput]);
+
+    expect(
+      model.callableTools(),
+      [
+        const CallableTool(
+          toolName: 'generic_object_tool',
+          properties: [
+            ListSchema(
+              name: 'data',
+              description: 'List of generic data objects',
+              type: ObjectSchema(
+                name: '',
+                properties: [
+                  StringSchema(name: 'generic_id', isRequired: true),
+                  StringSchema(name: 'value'),
+                ],
+              ),
+            ),
+            ObjectSchema(
+              name: 'singleObject',
+              description: 'A single generic object',
+              properties: [
+                StringSchema(name: 'generic_id', isRequired: true),
+                IntSchema(name: 'value'),
+              ],
+            ),
+          ],
+        ),
+      ],
+    );
+  });
 }
 
 @MCPToolInput(toolName: 'simple_tool', toolDescription: 'A simple test tool')
@@ -269,4 +335,57 @@ class UnsupportedRecordToolInput {
 
   @MCPToolProperty()
   final ({String a, int b}) record;
+}
+
+@MCPToolInput(toolName: 'enum_with_variables_tool')
+class EnumWithVariablesToolInput {
+  const EnumWithVariablesToolInput({required this.status});
+
+  @MCPToolProperty(description: 'Status with variables')
+  final StatusWithVariables status;
+}
+
+enum StatusWithVariables {
+  active(code: 1),
+  inactive(code: 0);
+
+  const StatusWithVariables({required this.code});
+
+  final int code;
+}
+
+@MCPToolInput(toolName: 'enum_with_methods_tool')
+class EnumWithMethodsToolInput {
+  const EnumWithMethodsToolInput({required this.action});
+
+  @MCPToolProperty(description: 'Action with methods')
+  final ActionWithMethods action;
+}
+
+enum ActionWithMethods {
+  start,
+  stop;
+
+  String describe() => 'This action is $name';
+}
+
+@MCPToolInput(toolName: 'generic_object_tool')
+class GenericObjectToolInput {
+  const GenericObjectToolInput({required this.data, required this.singleObject});
+
+  @MCPToolProperty(description: 'List of generic data objects')
+  final List<GenericObject<String>> data;
+
+  @MCPToolProperty(description: 'A single generic object')
+  final GenericObject<int> singleObject;
+}
+
+class GenericObject<T> {
+  const GenericObject({required this.id, required this.value});
+
+  @MCPToolProperty(name: 'generic_id', isRequired: true)
+  final String id;
+
+  @MCPToolProperty()
+  final T value;
 }
