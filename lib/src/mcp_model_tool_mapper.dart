@@ -69,11 +69,10 @@ class MCPModelToolMapper {
 
     if (reflected.isEnum) {
       final options = reflected.declarations.entries
-          .where((e) => _isEnumValue(e.key, e.value, reflected))
+          .where((e) => _isEnumValue(e.key, e.value))
           .map((e) => MirrorSystem.getName(e.key))
           .toList();
 
-      // TODO(jasperessien): Figure out a way to prevent variables as part of EnnumSchema options
       return EnumSchema(name: name, description: description, isRequired: isRequired, options: options);
     }
 
@@ -89,11 +88,9 @@ class MCPModelToolMapper {
     return InvalidSchema(name: name, description: description, error: 'Cannot handle type ${reflected.reflectedType}');
   }
 
-  bool _isEnumValue(Symbol e, DeclarationMirror declaration, ClassMirror reflected) => switch ((e, declaration)) {
+  bool _isEnumValue(Symbol e, DeclarationMirror declaration) => switch ((e, declaration)) {
     (#values, _) => false,
-    (_, MethodMirror()) => false,
-    (_, VariableMirror()) => true,
-    (_, _) when e == reflected.simpleName => false,
+    (_, VariableMirror(isFinal: false)) => true,
     (_, _) => false,
   };
 
