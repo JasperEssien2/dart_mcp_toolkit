@@ -69,7 +69,7 @@ class MCPModelToolMapper {
 
     if (reflected.isEnum) {
       final options = reflected.declarations.entries
-          .where((e) => _isEnumValue(e, reflected))
+          .where((e) => _isEnumValue(e.value, reflected))
           .map((e) => MirrorSystem.getName(e.key))
           .toList();
 
@@ -88,11 +88,10 @@ class MCPModelToolMapper {
     return InvalidSchema(name: name, description: description, error: 'Cannot handle type ${reflected.reflectedType}');
   }
 
-  bool _isEnumValue(MapEntry<Symbol, DeclarationMirror> entry, ClassMirror reflected) =>
-      switch ((entry.key, entry.value)) {
-        (_, VariableMirror(:final type)) when reflected.reflectedType == type.reflectedType => true,
-        (_, _) => false,
-      };
+  bool _isEnumValue(DeclarationMirror declaration, ClassMirror reflected) => switch (declaration) {
+    VariableMirror(:final type) when reflected.reflectedType == type.reflectedType => true,
+    _ => false,
+  };
 
   // ignore: avoid_dynamic
   dynamic _findCallableToolPropertyFromDeclaration(MapEntry<Symbol, DeclarationMirror> declaration) =>
