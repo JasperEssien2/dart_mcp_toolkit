@@ -7,6 +7,7 @@ class CallableTool extends Equatable {
   final String toolName;
   final String? toolDescription;
   final List<CallablePropertySchema>? properties;
+  // TODO(jasperessien): Create a required list variable to house required properties
 
   @override
   List<Object?> get props => [toolName, toolDescription, properties];

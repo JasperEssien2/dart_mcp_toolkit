@@ -3,6 +3,8 @@ import 'package:equatable/equatable.dart';
 sealed class CallablePropertySchema extends Equatable {
   const CallablePropertySchema({required this.name, this.description, this.isRequired});
 
+  Map<String, dynamic> toJson();
+
   String get jsonType;
 
   final String name;
@@ -20,6 +22,9 @@ class StringSchema extends CallablePropertySchema {
 
   @override
   String get jsonType => 'string';
+
+  @override
+  Map<String, dynamic> toJson() => {'name': name, 'type': jsonType, 'description': ?description};
 }
 
 class BooleanSchema extends CallablePropertySchema {
@@ -29,6 +34,9 @@ class BooleanSchema extends CallablePropertySchema {
 
   @override
   String get jsonType => 'boolean';
+
+  @override
+  Map<String, dynamic> toJson() => {'name': name, 'type': jsonType, 'description': ?description};
 }
 
 class NumberSchema extends CallablePropertySchema {
@@ -38,6 +46,9 @@ class NumberSchema extends CallablePropertySchema {
 
   @override
   String get jsonType => 'number';
+
+  @override
+  Map<String, dynamic> toJson() => {'name': name, 'type': jsonType, 'description': ?description};
 }
 
 class IntSchema extends CallablePropertySchema {
@@ -47,6 +58,9 @@ class IntSchema extends CallablePropertySchema {
 
   @override
   String get jsonType => 'integer';
+
+  @override
+  Map<String, dynamic> toJson() => {'name': name, 'type': jsonType, 'description': ?description};
 }
 
 class ListSchema extends CallablePropertySchema {
@@ -59,6 +73,14 @@ class ListSchema extends CallablePropertySchema {
 
   @override
   List<Object?> get props => [...super.props, type];
+
+  @override
+  Map<String, dynamic> toJson() => {
+    'name': name,
+    'type': jsonType,
+    'description': ?description,
+    'items': type.toJson(),
+  };
 }
 
 class EnumSchema extends CallablePropertySchema {
@@ -71,6 +93,14 @@ class EnumSchema extends CallablePropertySchema {
 
   @override
   List<Object?> get props => [...super.props, options];
+
+  @override
+  Map<String, dynamic> toJson() => {
+    'name': name,
+    'type': jsonType,
+    'description': ?description,
+    'enum': options,
+  };
 }
 
 class ObjectSchema extends CallablePropertySchema {
@@ -83,6 +113,14 @@ class ObjectSchema extends CallablePropertySchema {
 
   @override
   List<Object?> get props => [...super.props, properties];
+
+  @override
+  Map<String, dynamic> toJson() => {
+    'name': name,
+    'type': jsonType,
+    'description': ?description,
+    'properties': {for (final property in properties) property.name: property.toJson()},
+  };
 }
 
 class NullSchema extends CallablePropertySchema {
@@ -90,6 +128,9 @@ class NullSchema extends CallablePropertySchema {
 
   @override
   String get jsonType => 'null';
+
+  @override
+  Map<String, dynamic> toJson() => {'name': name, 'type': jsonType, 'description': ?description};
 }
 
 class InvalidSchema extends CallablePropertySchema {
@@ -102,4 +143,7 @@ class InvalidSchema extends CallablePropertySchema {
 
   @override
   List<Object?> get props => [...super.props, error];
+
+  @override
+  Map<String, dynamic> toJson() => {};
 }
