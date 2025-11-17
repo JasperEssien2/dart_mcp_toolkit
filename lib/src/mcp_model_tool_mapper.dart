@@ -33,7 +33,12 @@ class MCPModelToolMapper {
     )) {
       final properties = _getCallablePropertiesFromClass(reflected);
 
-      return CallableTool(toolName: name, toolDescription: description, properties: properties);
+      return CallableTool(
+        toolName: name,
+        toolDescription: description,
+        properties: properties,
+        requiredProperties: properties.where((e) => e.isRequired ?? false).map((e) => e.name).toList(),
+      );
     }
 
     return null;
