@@ -16,7 +16,7 @@ void main() {
             const CallableTool(
               toolName: 'simple_tool',
               toolDescription: 'A simple test tool',
-              properties: [
+              inputSchema: [
                 StringSchema(name: 'param1', description: 'The first parameter', isRequired: true),
                 IntSchema(name: 'param2', description: 'The second parameter', isRequired: false),
                 BooleanSchema(name: 'boolean_param', description: 'The third parameter', isRequired: false),
@@ -35,7 +35,7 @@ void main() {
           [
             const CallableTool(
               toolName: 'complex_tool',
-              properties: [
+              inputSchema: [
                 StringSchema(name: 'name', description: 'User name', isRequired: true),
                 IntSchema(name: 'age', description: 'User age'),
                 ListSchema(name: 'items', description: 'List of items', type: StringSchema.type()),
@@ -63,7 +63,7 @@ void main() {
           [
             const CallableTool(
               toolName: 'list_of_objects_tool',
-              properties: [
+              inputSchema: [
                 ListSchema(
                   name: 'data',
                   description: 'List of data objects',
@@ -91,7 +91,7 @@ void main() {
           [
             const CallableTool(
               toolName: 'tool_with_custom_names',
-              properties: [
+              inputSchema: [
                 StringSchema(name: 'custom_first_param', description: 'Custom named first parameter'),
                 IntSchema(name: 'custom_second_param'),
               ],
@@ -109,7 +109,7 @@ void main() {
           [
             const CallableTool(
               toolName: 'no_properties_tool',
-              properties: [],
+              inputSchema: [],
               requiredProperties: [],
             ),
           ],
@@ -130,7 +130,7 @@ void main() {
           [
             const CallableTool(
               toolName: 'unsupported_record_tool',
-              properties: [
+              inputSchema: [
                 InvalidSchema(name: 'record', error: 'Does not support Record type'),
               ],
               requiredProperties: [],
@@ -153,7 +153,7 @@ void main() {
           [
             const CallableTool(
               toolName: 'tool_with_no_properties_but_annotation',
-              properties: [],
+              inputSchema: [],
               requiredProperties: [],
             ),
           ],
@@ -182,7 +182,7 @@ void main() {
       [
         const CallableTool(
           toolName: 'enum_with_methods_tool',
-          properties: [
+          inputSchema: [
             EnumSchema(
               name: 'action',
               description: 'Action with methods',
@@ -204,7 +204,7 @@ void main() {
       [
         const CallableTool(
           toolName: 'enum_with_variable_tool',
-          properties: [
+          inputSchema: [
             EnumSchema(name: 'action', description: 'Action with a variable', options: ['start', 'stop']),
           ],
           requiredProperties: [],
