@@ -1,3 +1,5 @@
+// ignore_for_file: inference_failure_on_collection_literal
+
 import 'package:mcp_toolkit/src/annotations/annotations.dart';
 import 'package:mcp_toolkit/src/mcp_model_tool_mapper.dart';
 import 'package:mcp_toolkit/src/models/callable_property_schema.dart';
@@ -74,7 +76,6 @@ void main() {
                     name: 'data',
                     description: 'List of data objects',
                     type: ObjectSchema(
-                      name: null,
                       properties: [
                         StringSchema(name: 'nested_id', isRequired: true),
                         BooleanSchema(name: 'value'),
@@ -176,6 +177,52 @@ void main() {
         );
       });
 
+      test('ensure mapper returns correct structure for EnumWithMethodsToolInput', () {
+        final model = MCPModelToolMapper(toolInput: [EnumWithMethodsToolInput])..initialize();
+
+        expect(
+          model.callableTools,
+          [
+            const CallableTool(
+              toolName: 'enum_with_methods_tool',
+              inputSchema: ObjectSchema(
+                properties: [
+                  EnumSchema(
+                    name: 'action',
+                    description: 'Action with methods',
+                    options: ['start', 'stop'],
+                    isRequired: true,
+                  ),
+                ],
+                requiredProperties: ['action'],
+              ),
+            ),
+          ],
+        );
+      });
+
+      test(
+        'ensure mapper returns correct structure for EnumWithVariableToolInput and excludes variable from options',
+        () {
+          final model = MCPModelToolMapper(toolInput: [EnumWithVariableToolInput])..initialize();
+
+          expect(
+            model.callableTools,
+            [
+              const CallableTool(
+                toolName: 'enum_with_variable_tool',
+                inputSchema: ObjectSchema(
+                  properties: [
+                    EnumSchema(name: 'action', description: 'Action with a variable', options: ['start', 'stop']),
+                  ],
+                  requiredProperties: [],
+                ),
+              ),
+            ],
+          );
+        },
+      );
+
       test('ensure mapper ignores classes with MCPToolProperty annotations but no MCPToolInput annotation', () {
         final model = MCPModelToolMapper(toolInput: [ToolWithPropertiesButNoInputAnnotation])..initialize();
 
@@ -188,49 +235,163 @@ void main() {
         expect(model.callableTools, isEmpty);
       });
     });
-  });
 
-  test('ensure mapper returns correct structure for EnumWithMethodsToolInput', () {
-    final model = MCPModelToolMapper(toolInput: [EnumWithMethodsToolInput])..initialize();
+    group('Test callable tools toJson', () {
+      test('ensure inputSchema toJson returns correct JSON for SimpleToolInput', () {
+        final model = MCPModelToolMapper(toolInput: [SimpleToolInput])..initialize();
+        final tool = model.callableTools.first;
 
-    expect(
-      model.callableTools,
-      [
-        const CallableTool(
-          toolName: 'enum_with_methods_tool',
-          inputSchema: ObjectSchema(
-            properties: [
-              EnumSchema(
-                name: 'action',
-                description: 'Action with methods',
-                options: ['start', 'stop'],
-                isRequired: true,
-              ),
-            ],
-            requiredProperties: ['action'],
-          ),
-        ),
-      ],
-    );
-  });
+        expect(
+          tool.inputSchema?.toJson(),
+          {
+            'type': 'object',
+            'properties': {
+              'param1': {'type': 'string', 'name': 'param1', 'description': 'The first parameter'},
+              'param2': {'type': 'integer', 'name': 'param2', 'description': 'The second parameter'},
+              'boolean_param': {'type': 'boolean', 'name': 'boolean_param', 'description': 'The third parameter'},
+            },
+            'required': ['param1'],
+          },
+        );
+      });
 
-  test('ensure mapper returns correct structure for EnumWithVariableToolInput and excludes variable from options', () {
-    final model = MCPModelToolMapper(toolInput: [EnumWithVariableToolInput])..initialize();
+      test('ensure inputSchema toJson returns correct JSON for ComplexToolInput', () {
+        final model = MCPModelToolMapper(toolInput: [ComplexToolInput])..initialize();
+        final tool = model.callableTools.first;
 
-    expect(
-      model.callableTools,
-      [
-        const CallableTool(
-          toolName: 'enum_with_variable_tool',
-          inputSchema: ObjectSchema(
-            properties: [
-              EnumSchema(name: 'action', description: 'Action with a variable', options: ['start', 'stop']),
-            ],
-            requiredProperties: [],
-          ),
-        ),
-      ],
-    );
+        expect(
+          tool.inputSchema?.toJson(),
+          {
+            'type': 'object',
+            'properties': {
+              'name': {'type': 'string', 'name': 'name', 'description': 'User name'},
+              'age': {'type': 'integer', 'name': 'age', 'description': 'User age'},
+              'items': {
+                'type': 'array',
+                'name': 'items',
+                'description': 'List of items',
+                'items': {'type': 'string'},
+              },
+              'nested': {
+                'type': 'object',
+                'name': 'nested',
+                'description': 'Nested object',
+                'properties': {
+                  'nested_id': {'type': 'string', 'name': 'nested_id'},
+                  'value': {'type': 'boolean', 'name': 'value'},
+                },
+                'required': ['nested_id'],
+              },
+              'status': {
+                'type': 'string',
+                'name': 'status',
+                'description': 'Status of the user',
+                'enum': ['value1', 'value2'],
+              },
+            },
+            'required': ['name'],
+          },
+        );
+      });
+
+      test('ensure inputSchema toJson returns correct JSON for ListOfObjectsToolInput', () {
+        final model = MCPModelToolMapper(toolInput: [ListOfObjectsToolInput])..initialize();
+        final tool = model.callableTools.first;
+
+        expect(
+          tool.inputSchema?.toJson(),
+          {
+            'type': 'object',
+            'properties': {
+              'data': {
+                'type': 'array',
+                'name': 'data',
+                'description': 'List of data objects',
+                'items': {
+                  'type': 'object',
+                  'properties': {
+                    'nested_id': {'type': 'string', 'name': 'nested_id'},
+                    'value': {'type': 'boolean', 'name': 'value'},
+                  },
+                  'required': ['nested_id'],
+                },
+              },
+            },
+            'required': ['data'],
+          },
+        );
+      });
+
+      test('ensure inputSchema toJson returns correct JSON for CustomNamesToolInput', () {
+        final model = MCPModelToolMapper(toolInput: [CustomNamesToolInput])..initialize();
+        final tool = model.callableTools.first;
+
+        expect(
+          tool.inputSchema?.toJson(),
+          {
+            'type': 'object',
+            'properties': {
+              'custom_first_param': {
+                'type': 'string',
+                'name': 'custom_first_param',
+                'description': 'Custom named first parameter',
+              },
+              'custom_second_param': {'type': 'integer', 'name': 'custom_second_param'},
+            },
+            'required': [],
+          },
+        );
+      });
+
+      test('ensure inputSchema toJson returns correct JSON for NoPropertiesToolInput', () {
+        final model = MCPModelToolMapper(toolInput: [NoPropertiesToolInput])..initialize();
+        final tool = model.callableTools.first;
+
+        expect(tool.inputSchema?.toJson(), {'type': 'object', 'properties': {}, 'required': []});
+      });
+
+      test('ensure inputSchema toJson returns correct JSON for EnumWithMethodsToolInput', () {
+        final model = MCPModelToolMapper(toolInput: [EnumWithMethodsToolInput])..initialize();
+        final tool = model.callableTools.first;
+
+        expect(
+          tool.inputSchema?.toJson(),
+          {
+            'type': 'object',
+            'properties': {
+              'action': {
+                'type': 'string',
+                'name': 'action',
+                'description': 'Action with methods',
+                'enum': ['start', 'stop'],
+              },
+            },
+            'required': ['action'],
+          },
+        );
+      });
+
+      test('ensure inputSchema toJson returns correct JSON for EnumWithVariableToolInput', () {
+        final model = MCPModelToolMapper(toolInput: [EnumWithVariableToolInput])..initialize();
+        final tool = model.callableTools.first;
+
+        expect(
+          tool.inputSchema?.toJson(),
+          {
+            'type': 'object',
+            'properties': {
+              'action': {
+                'type': 'string',
+                'name': 'action',
+                'description': 'Action with a variable',
+                'enum': ['start', 'stop'],
+              },
+            },
+            'required': [],
+          },
+        );
+      });
+    });
   });
 }
 
