@@ -246,9 +246,9 @@ void main() {
           {
             'type': 'object',
             'properties': {
-              'param1': {'type': 'string', 'name': 'param1', 'description': 'The first parameter'},
-              'param2': {'type': 'integer', 'name': 'param2', 'description': 'The second parameter'},
-              'boolean_param': {'type': 'boolean', 'name': 'boolean_param', 'description': 'The third parameter'},
+              'param1': {'type': 'string', 'description': 'The first parameter'},
+              'param2': {'type': 'integer', 'description': 'The second parameter'},
+              'boolean_param': {'type': 'boolean', 'description': 'The third parameter'},
             },
             'required': ['param1'],
           },
@@ -264,27 +264,24 @@ void main() {
           {
             'type': 'object',
             'properties': {
-              'name': {'type': 'string', 'name': 'name', 'description': 'User name'},
-              'age': {'type': 'integer', 'name': 'age', 'description': 'User age'},
+              'name': {'type': 'string', 'description': 'User name'},
+              'age': {'type': 'integer', 'description': 'User age'},
               'items': {
                 'type': 'array',
-                'name': 'items',
                 'description': 'List of items',
                 'items': {'type': 'string'},
               },
               'nested': {
                 'type': 'object',
-                'name': 'nested',
                 'description': 'Nested object',
                 'properties': {
-                  'nested_id': {'type': 'string', 'name': 'nested_id'},
-                  'value': {'type': 'boolean', 'name': 'value'},
+                  'nested_id': {'type': 'string'},
+                  'value': {'type': 'boolean'},
                 },
                 'required': ['nested_id'],
               },
               'status': {
                 'type': 'string',
-                'name': 'status',
                 'description': 'Status of the user',
                 'enum': ['value1', 'value2'],
               },
@@ -305,13 +302,12 @@ void main() {
             'properties': {
               'data': {
                 'type': 'array',
-                'name': 'data',
                 'description': 'List of data objects',
                 'items': {
                   'type': 'object',
                   'properties': {
-                    'nested_id': {'type': 'string', 'name': 'nested_id'},
-                    'value': {'type': 'boolean', 'name': 'value'},
+                    'nested_id': {'type': 'string'},
+                    'value': {'type': 'boolean'},
                   },
                   'required': ['nested_id'],
                 },
@@ -333,10 +329,9 @@ void main() {
             'properties': {
               'custom_first_param': {
                 'type': 'string',
-                'name': 'custom_first_param',
                 'description': 'Custom named first parameter',
               },
-              'custom_second_param': {'type': 'integer', 'name': 'custom_second_param'},
+              'custom_second_param': {'type': 'integer'},
             },
             'required': [],
           },
@@ -361,7 +356,6 @@ void main() {
             'properties': {
               'action': {
                 'type': 'string',
-                'name': 'action',
                 'description': 'Action with methods',
                 'enum': ['start', 'stop'],
               },
@@ -382,7 +376,6 @@ void main() {
             'properties': {
               'action': {
                 'type': 'string',
-                'name': 'action',
                 'description': 'Action with a variable',
                 'enum': ['start', 'stop'],
               },
