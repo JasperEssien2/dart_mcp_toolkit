@@ -6,7 +6,7 @@ final class CallableTool extends Equatable {
 
   final String toolName;
   final String? toolDescription;
-  final ObjectSchema? inputSchema;
+  final ObjectPropertySchema? inputSchema;
 
   @override
   List<Object?> get props => [toolName, toolDescription, inputSchema];
