@@ -56,13 +56,13 @@ void main() {
     final schema = complexTool.inputSchema;
     final itemsProperty = schema?.properties?.firstWhere(
       (p) => p.name == 'items',
-      orElse: () => const InvalidSchema(name: 'not_found', error: 'Not found'),
+      orElse: () => const InvalidPropertySchema(name: 'not_found', error: 'Not found'),
     );
     logger.log('Tool: ${complexTool.toolName}');
     logger.log('Items property type: ${itemsProperty?.runtimeType}');
-    if (itemsProperty case ListSchema(:final type)) {
+    if (itemsProperty case ListPropertySchema(:final type)) {
       logger.log('Items contain: ${itemsProperty.jsonType}');
-      if (type case ObjectSchema(:final properties?)) {
+      if (type case ObjectPropertySchema(:final properties?)) {
         final objectPropertyNames = properties.map((p) => p.name).join(', ');
         logger.log('Object properties: $objectPropertyNames');
       }
@@ -76,11 +76,11 @@ void main() {
   if (mapper.callableToolByName('taskTool') case CallableTool(:final toolName, :final inputSchema?)) {
     final priorityProperty = inputSchema.properties?.firstWhere(
       (p) => p.name == 'priority',
-      orElse: () => const InvalidSchema(name: 'not_found', error: 'Not found'),
+      orElse: () => const InvalidPropertySchema(name: 'not_found', error: 'Not found'),
     );
     logger.log('Tool: $toolName');
     logger.log('Priority property type: ${priorityProperty?.runtimeType}');
-    if (priorityProperty is EnumSchema) {
+    if (priorityProperty is EnumPropertySchema) {
       logger.log('Enum values: ${priorityProperty.options}');
     }
     logger.log('Full JSON: ${inputSchema.toJson()}');

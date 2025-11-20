@@ -18,11 +18,15 @@ void main() {
             const CallableTool(
               toolName: 'simple_tool',
               toolDescription: 'A simple test tool',
-              inputSchema: ObjectSchema(
+              inputSchema: ObjectPropertySchema(
                 properties: [
-                  StringSchema(name: 'param1', description: 'The first parameter', isRequired: true),
-                  IntSchema(name: 'param2', description: 'The second parameter', isRequired: false),
-                  BooleanSchema(name: 'boolean_param', description: 'The third parameter', isRequired: false),
+                  StringPropertySchema(
+                    name: 'param1',
+                    description: 'The first parameter',
+                    isRequired: true,
+                  ),
+                  IntPropertySchema(name: 'param2', description: 'The second parameter', isRequired: false),
+                  BooleanPropertySchema(name: 'boolean_param', description: 'The third parameter', isRequired: false),
                 ],
                 requiredProperties: ['param1'],
               ),
@@ -39,21 +43,21 @@ void main() {
           [
             const CallableTool(
               toolName: 'complex_tool',
-              inputSchema: ObjectSchema(
+              inputSchema: ObjectPropertySchema(
                 properties: [
-                  StringSchema(name: 'name', description: 'User name', isRequired: true),
-                  IntSchema(name: 'age', description: 'User age'),
-                  ListSchema(name: 'items', description: 'List of items', type: StringSchema.type()),
-                  ObjectSchema(
+                  StringPropertySchema(name: 'name', description: 'User name', isRequired: true),
+                  IntPropertySchema(name: 'age', description: 'User age'),
+                  ListPropertySchema(name: 'items', description: 'List of items', type: StringPropertySchema.type()),
+                  ObjectPropertySchema(
                     name: 'nested',
                     description: 'Nested object',
                     properties: [
-                      StringSchema(name: 'nested_id', isRequired: true),
-                      BooleanSchema(name: 'value'),
+                      StringPropertySchema(name: 'nested_id', isRequired: true),
+                      BooleanPropertySchema(name: 'value'),
                     ],
                     requiredProperties: ['nested_id'],
                   ),
-                  EnumSchema(name: 'status', description: 'Status of the user', options: ['value1', 'value2']),
+                  EnumPropertySchema(name: 'status', description: 'Status of the user', options: ['value1', 'value2']),
                 ],
                 requiredProperties: ['name'],
               ),
@@ -70,15 +74,15 @@ void main() {
           [
             const CallableTool(
               toolName: 'list_of_objects_tool',
-              inputSchema: ObjectSchema(
+              inputSchema: ObjectPropertySchema(
                 properties: [
-                  ListSchema(
+                  ListPropertySchema(
                     name: 'data',
                     description: 'List of data objects',
-                    type: ObjectSchema(
+                    type: ObjectPropertySchema(
                       properties: [
-                        StringSchema(name: 'nested_id', isRequired: true),
-                        BooleanSchema(name: 'value'),
+                        StringPropertySchema(name: 'nested_id', isRequired: true),
+                        BooleanPropertySchema(name: 'value'),
                       ],
                       requiredProperties: ['nested_id'],
                     ),
@@ -100,10 +104,13 @@ void main() {
           [
             const CallableTool(
               toolName: 'tool_with_custom_names',
-              inputSchema: ObjectSchema(
+              inputSchema: ObjectPropertySchema(
                 properties: [
-                  StringSchema(name: 'custom_first_param', description: 'Custom named first parameter'),
-                  IntSchema(name: 'custom_second_param'),
+                  StringPropertySchema(
+                    name: 'custom_first_param',
+                    description: 'Custom named first parameter',
+                  ),
+                  IntPropertySchema(name: 'custom_second_param'),
                 ],
                 requiredProperties: [],
               ),
@@ -120,7 +127,7 @@ void main() {
           [
             const CallableTool(
               toolName: 'no_properties_tool',
-              inputSchema: ObjectSchema(
+              inputSchema: ObjectPropertySchema(
                 properties: [],
                 requiredProperties: [],
               ),
@@ -143,9 +150,9 @@ void main() {
           [
             const CallableTool(
               toolName: 'unsupported_record_tool',
-              inputSchema: ObjectSchema(
+              inputSchema: ObjectPropertySchema(
                 properties: [
-                  InvalidSchema(name: 'record', error: 'Does not support Record type'),
+                  InvalidPropertySchema(name: 'record', error: 'Does not support Record type'),
                 ],
                 requiredProperties: [],
               ),
@@ -168,7 +175,7 @@ void main() {
           [
             const CallableTool(
               toolName: 'tool_with_no_properties_but_annotation',
-              inputSchema: ObjectSchema(
+              inputSchema: ObjectPropertySchema(
                 properties: [],
                 requiredProperties: [],
               ),
@@ -185,9 +192,9 @@ void main() {
           [
             const CallableTool(
               toolName: 'enum_with_methods_tool',
-              inputSchema: ObjectSchema(
+              inputSchema: ObjectPropertySchema(
                 properties: [
-                  EnumSchema(
+                  EnumPropertySchema(
                     name: 'action',
                     description: 'Action with methods',
                     options: ['start', 'stop'],
@@ -211,9 +218,13 @@ void main() {
             [
               const CallableTool(
                 toolName: 'enum_with_variable_tool',
-                inputSchema: ObjectSchema(
+                inputSchema: ObjectPropertySchema(
                   properties: [
-                    EnumSchema(name: 'action', description: 'Action with a variable', options: ['start', 'stop']),
+                    EnumPropertySchema(
+                      name: 'action',
+                      description: 'Action with a variable',
+                      options: ['start', 'stop'],
+                    ),
                   ],
                   requiredProperties: [],
                 ),

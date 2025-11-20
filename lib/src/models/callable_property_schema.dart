@@ -15,10 +15,10 @@ sealed class CallablePropertySchema extends Equatable {
   List<Object?> get props => [name, description, isRequired, jsonType];
 }
 
-class StringSchema extends CallablePropertySchema {
-  const StringSchema({super.name, super.description, super.isRequired});
+final class StringPropertySchema extends CallablePropertySchema {
+  const StringPropertySchema({super.name, super.description, super.isRequired});
 
-  const StringSchema.type() : super(name: null);
+  const StringPropertySchema.type() : super(name: null);
 
   @override
   String get jsonType => 'string';
@@ -27,10 +27,10 @@ class StringSchema extends CallablePropertySchema {
   Map<String, dynamic> toJson() => {'type': jsonType, 'description': ?description};
 }
 
-class BooleanSchema extends CallablePropertySchema {
-  const BooleanSchema({super.name, super.description, super.isRequired});
+final class BooleanPropertySchema extends CallablePropertySchema {
+  const BooleanPropertySchema({super.name, super.description, super.isRequired});
 
-  const BooleanSchema.type() : super(name: null);
+  const BooleanPropertySchema.type() : super(name: null);
 
   @override
   String get jsonType => 'boolean';
@@ -39,10 +39,10 @@ class BooleanSchema extends CallablePropertySchema {
   Map<String, dynamic> toJson() => {'type': jsonType, 'description': ?description};
 }
 
-class NumberSchema extends CallablePropertySchema {
-  const NumberSchema({super.name, super.description, super.isRequired});
+final class NumberPropertySchema extends CallablePropertySchema {
+  const NumberPropertySchema({super.name, super.description, super.isRequired});
 
-  const NumberSchema.type() : super(name: null);
+  const NumberPropertySchema.type() : super(name: null);
 
   @override
   String get jsonType => 'number';
@@ -51,10 +51,10 @@ class NumberSchema extends CallablePropertySchema {
   Map<String, dynamic> toJson() => {'type': jsonType, 'description': ?description};
 }
 
-class IntSchema extends CallablePropertySchema {
-  const IntSchema({super.name, super.description, super.isRequired});
+final class IntPropertySchema extends CallablePropertySchema {
+  const IntPropertySchema({super.name, super.description, super.isRequired});
 
-  const IntSchema.type() : super(name: null);
+  const IntPropertySchema.type() : super(name: null);
 
   @override
   String get jsonType => 'integer';
@@ -63,8 +63,8 @@ class IntSchema extends CallablePropertySchema {
   Map<String, dynamic> toJson() => {'type': jsonType, 'description': ?description};
 }
 
-class ListSchema extends CallablePropertySchema {
-  const ListSchema({super.name, super.description, super.isRequired, required this.type});
+final class ListPropertySchema extends CallablePropertySchema {
+  const ListPropertySchema({super.name, super.description, super.isRequired, required this.type});
 
   final CallablePropertySchema type;
 
@@ -82,8 +82,8 @@ class ListSchema extends CallablePropertySchema {
   };
 }
 
-class EnumSchema extends CallablePropertySchema {
-  const EnumSchema({super.name, super.description, super.isRequired, required this.options});
+final class EnumPropertySchema extends CallablePropertySchema {
+  const EnumPropertySchema({super.name, super.description, super.isRequired, required this.options});
 
   final List<String> options;
 
@@ -101,8 +101,8 @@ class EnumSchema extends CallablePropertySchema {
   };
 }
 
-class ObjectSchema extends CallablePropertySchema {
-  const ObjectSchema({
+final class ObjectPropertySchema extends CallablePropertySchema {
+  const ObjectPropertySchema({
     super.name,
     super.description,
     super.isRequired,
@@ -129,8 +129,8 @@ class ObjectSchema extends CallablePropertySchema {
   };
 }
 
-class NullSchema extends CallablePropertySchema {
-  const NullSchema({required super.name, super.description, super.isRequired});
+final class NullPropertySchema extends CallablePropertySchema {
+  const NullPropertySchema({required super.name, super.description, super.isRequired});
 
   @override
   String get jsonType => 'null';
@@ -139,8 +139,8 @@ class NullSchema extends CallablePropertySchema {
   Map<String, dynamic> toJson() => {'type': jsonType, 'description': ?description};
 }
 
-class InvalidSchema extends CallablePropertySchema {
-  const InvalidSchema({required super.name, super.description, super.isRequired = false, required this.error});
+final class InvalidPropertySchema extends CallablePropertySchema {
+  const InvalidPropertySchema({required super.name, super.description, super.isRequired = false, required this.error});
 
   final String error;
 

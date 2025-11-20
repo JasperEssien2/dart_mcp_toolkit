@@ -36,7 +36,7 @@ class MCPModelToolMapper {
       return CallableTool(
         toolName: name,
         toolDescription: description,
-        inputSchema: ObjectSchema(
+        inputSchema: ObjectPropertySchema(
           properties: properties,
           requiredProperties: _getRequiredProperties(properties),
         ),
@@ -46,22 +46,22 @@ class MCPModelToolMapper {
     return null;
   }
 
-  ListSchema _handleList(
+  ListPropertySchema _handleList(
     VariableMirror value, {
     required String name,
     required String? description,
     required bool? isRequired,
-  }) => ListSchema(
+  }) => ListPropertySchema(
     name: name,
     description: description,
     isRequired: isRequired,
     type: switch ((value.type.typeArguments.firstOrNull?.simpleName, value.type.typeArguments.firstOrNull)) {
-      (#int, _) => const IntSchema.type(),
-      (#num, _) => const NumberSchema.type(),
-      (#String, _) => const StringSchema.type(),
-      (#bool, _) => const BooleanSchema.type(),
+      (#int, _) => const IntPropertySchema.type(),
+      (#num, _) => const NumberPropertySchema.type(),
+      (#String, _) => const StringPropertySchema.type(),
+      (#bool, _) => const BooleanPropertySchema.type(),
       (_, final type?) => _handleOtherType(type: type.reflectedType, name: null, description: null, isRequired: null),
-      (final symbol, _) => InvalidSchema(name: name, description: description, error: 'Cannot handle: $symbol'),
+      (final symbol, _) => InvalidPropertySchema(name: name, description: description, error: 'Cannot handle: $symbol'),
     },
   );
 
@@ -79,16 +79,16 @@ class MCPModelToolMapper {
           .map((e) => MirrorSystem.getName(e.key))
           .toList();
 
-      return EnumSchema(name: name, description: description, isRequired: isRequired, options: options);
+      return EnumPropertySchema(name: name, description: description, isRequired: isRequired, options: options);
     }
 
     if (reflected.simpleName case #Record) {
       // TODO(jasperessien): No way to extract record variables/declaration using dart::mirror
-      return InvalidSchema(name: name, description: description, error: 'Does not support Record type');
+      return InvalidPropertySchema(name: name, description: description, error: 'Does not support Record type');
     }
 
     if (_getCallablePropertiesFromClass(reflected) case final properties when properties.isNotEmpty) {
-      return ObjectSchema(
+      return ObjectPropertySchema(
         name: name,
         description: description,
         isRequired: isRequired,
@@ -97,7 +97,7 @@ class MCPModelToolMapper {
       );
     }
 
-    return InvalidSchema(
+    return InvalidPropertySchema(
       name: name,
       description: description,
       error: 'Cannot handle type ${MirrorSystem.getName(reflected.simpleName)}',
@@ -131,10 +131,14 @@ class MCPModelToolMapper {
 
         if (declaration.value case VariableMirror()) {
           final property = switch ((declaration.value as VariableMirror).type.simpleName) {
-            #int => IntSchema(name: fieldName, description: description, isRequired: isRequired),
-            #num => NumberSchema(name: fieldName, description: description, isRequired: isRequired),
-            #String => StringSchema(name: fieldName, description: description, isRequired: isRequired),
-            #bool => BooleanSchema(name: fieldName, description: description, isRequired: isRequired),
+            #int => IntPropertySchema(name: fieldName, description: description, isRequired: isRequired),
+            #num => NumberPropertySchema(name: fieldName, description: description, isRequired: isRequired),
+            #String => StringPropertySchema(
+              name: fieldName,
+              description: description,
+              isRequired: isRequired,
+            ),
+            #bool => BooleanPropertySchema(name: fieldName, description: description, isRequired: isRequired),
             #List => _handleList(
               declaration.value as VariableMirror,
               name: fieldName,
